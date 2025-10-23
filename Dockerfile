@@ -1,15 +1,16 @@
 # ============================================================
-# AstroVastuPro — Production Dockerfile (Render deployment)
+# AstroVastuPro — Dockerfile (Final Render Deployment Version)
 # ============================================================
 
-# Use slim Python image for smaller footprint
 FROM python:3.11-slim
 
+# ------------------------------------------------------------
 # Set working directory inside container
+# ------------------------------------------------------------
 WORKDIR /app
 
 # ------------------------------------------------------------
-# System dependencies (for pip builds and common packages)
+# System dependencies required for build and runtime
 # ------------------------------------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -21,12 +22,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ------------------------------------------------------------
-# Create a non-root user for better security
+# Create a secure non-root user
 # ------------------------------------------------------------
 RUN useradd --create-home --home-dir /home/appuser --shell /bin/bash appuser
 
 # ------------------------------------------------------------
-# Copy requirements first to leverage Docker layer caching
+# Copy requirements first (to leverage Docker layer cache)
 # ------------------------------------------------------------
 COPY requirements.txt /app/requirements.txt
 
@@ -35,24 +36,24 @@ RUN pip install --upgrade pip setuptools wheel \
     && pip install --no-cache-dir -r /app/requirements.txt
 
 # ------------------------------------------------------------
-# Copy project files into image
+# Copy entire project into image
 # ------------------------------------------------------------
 COPY . /app
 
-# Ensure reports directory exists and is writable
+# Ensure reports folder exists and is writable
 RUN mkdir -p /app/reports \
     && chown -R appuser:appuser /app
 
 # ------------------------------------------------------------
-# Environment variables
+# Environment configuration
 # ------------------------------------------------------------
-# Add /app to PYTHONPATH so 'import app' always works
+# Make sure Python sees /app (so `import app` always works)
 ENV PYTHONPATH="/app:${PYTHONPATH}"
 
-# Add local bin to PATH for non-root user installs
+# Add local bin to PATH for appuser
 ENV PATH="/home/appuser/.local/bin:${PATH}"
 
-# Disable Python output buffering (for immediate logs)
+# Unbuffered output for real-time logs
 ENV PYTHONUNBUFFERED=1
 
 # ------------------------------------------------------------
@@ -61,8 +62,8 @@ ENV PYTHONUNBUFFERED=1
 USER appuser
 
 # ------------------------------------------------------------
-# Default start command for Render
+# Start the application
 # ------------------------------------------------------------
 # Render automatically provides $PORT
-CMD ["sh", "-c", "uvicorn astro_service_with_dasha:app --host 0.0.0.0 --port ${PORT:-8000} --app-dir app --workers 1"]
-
+# --app-dir app ensures uvicorn loads correctly
+CMD ["sh", "-c", "uvicorn astro_service_with_dasha:app --app-dir app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
