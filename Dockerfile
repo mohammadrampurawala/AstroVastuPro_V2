@@ -64,4 +64,5 @@ USER appuser
 # Default start command for Render
 # ------------------------------------------------------------
 # Render automatically provides $PORT
-CMD ["sh", "-c", "uvicorn app.astro_service_with_dasha:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
+CMD ["sh", "-c", "uvicorn astro_service_with_dasha:app --host 0.0.0.0 --port ${PORT:-8000} --app-dir app --workers 1"]
+
