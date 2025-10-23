@@ -10,7 +10,7 @@ using pyswisseph (Swiss Ephemeris). This version integrates:
  - optional timezone_helper.resolve_coordinates (if present)
 
 Run:
-    uvicorn app.astro_service_with_dasha:app --reload --port 8000
+    uvicorn astro_service_with_dasha:app --host 0.0.0.0 --port $PORT --app-dir app --workers 1
 """
 from __future__ import annotations
 
@@ -654,3 +654,4 @@ def compute_dasha(data: BirthData):
         "nakshatra_fraction": maha_info["nakshatra_fraction"],
         "mahadasha_sequence": maha_info["mahadasha_sequence"],
     }
+
