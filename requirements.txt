@@ -1,0 +1,29 @@
+# Core dependencies
+fastapi==0.111.0
+uvicorn==0.30.1
+pydantic==2.8.2
+
+# Astronomy / Ephemeris
+pyswisseph>=2.10.3
+python-dateutil==2.9.0
+pytz==2024.1
+geopy==2.3.0
+
+# Data utilities
+numpy==1.26.4
+pandas==2.2.2
+
+# Async tools
+httpx==0.27.0
+aiofiles==23.2.1
+
+# AI / GPT integration
+openai==1.40.0
+
+# PDF and report generation (optional for later)
+jinja2==3.1.3
+weasyprint==62.1
+
+# Development and testing
+pytest==8.3.1
+black==24.4.2
